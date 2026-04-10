@@ -1,26 +1,26 @@
 :root {
-  --bg: #f4f7fb;
-  --surface: #ffffff;
-  --surface-2: #f8fbff;
-  --text: #122033;
-  --muted: #5d6b82;
-  --border: #e3eaf4;
-  --shadow: 0 18px 40px rgba(15, 23, 42, 0.08);
+  --bg: #f6f4ef;
+  --surface: #fffdf8;
+  --surface-2: #f3efe7;
+  --text: #1f2724;
+  --muted: #646d68;
+  --border: #ddd7cb;
+  --shadow: 0 18px 40px rgba(31, 39, 36, 0.08);
 
-  --primary: #2563eb;
-  --primary-soft: #eaf2ff;
+  --primary: #2f5d50;
+  --primary-soft: #e8f0ed;
 
-  --success: #15803d;
-  --success-soft: #eaf8ef;
+  --success: #2f7a5c;
+  --success-soft: #eaf5ef;
 
-  --failure: #dc2626;
-  --failure-soft: #feeeee;
+  --failure: #b2412d;
+  --failure-soft: #fbeeea;
 
-  --warning: #b45309;
-  --warning-soft: #fff5e8;
+  --warning: #9a6a2f;
+  --warning-soft: #faf1e3;
 
-  --neutral: #64748b;
-  --neutral-soft: #f1f5f9;
+  --neutral: #6c736d;
+  --neutral-soft: #eef0ec;
 }
 
 * {
@@ -35,7 +35,7 @@ body {
 
 body {
   font-family: "Segoe UI", Arial, sans-serif;
-  background: linear-gradient(180deg, #f5f8fc 0%, #eef3f9 100%);
+  background: linear-gradient(180deg, #f6f4ef 0%, #ece7dc 100%);
   color: var(--text);
   min-height: 100vh;
 }
@@ -46,7 +46,7 @@ body {
 }
 
 .hero {
-  background: linear-gradient(135deg, #0f172a 0%, #1d4ed8 100%);
+  background: linear-gradient(135deg, #1f2724 0%, #2f5d50 58%, #8b5e34 100%);
   color: #fff;
   padding: 44px 0 34px;
 }
@@ -64,7 +64,7 @@ body {
   font-weight: 700;
   letter-spacing: 0.08em;
   text-transform: uppercase;
-  color: #bfdbfe;
+  color: #e9d7bd;
 }
 
 .hero h1 {
@@ -77,12 +77,12 @@ body {
   margin: 0;
   max-width: 760px;
   line-height: 1.6;
-  color: rgba(255, 255, 255, 0.88);
+  color: rgba(255, 248, 240, 0.88);
 }
 
 .hero-status {
-  background: rgba(255, 255, 255, 0.12);
-  border: 1px solid rgba(255, 255, 255, 0.16);
+  background: rgba(255, 253, 248, 0.1);
+  border: 1px solid rgba(255, 248, 240, 0.16);
   border-radius: 22px;
   padding: 22px;
   backdrop-filter: blur(10px);
@@ -96,7 +96,7 @@ body {
 .hero-status p {
   margin: 0;
   line-height: 1.55;
-  color: rgba(255, 255, 255, 0.88);
+  color: rgba(255, 248, 240, 0.88);
 }
 
 .main-layout {
@@ -153,15 +153,15 @@ body {
 
 button,
 .btn {
-  background: linear-gradient(180deg, #2f6ef2, #1f5ce1);
-  color: #fff;
+  background: linear-gradient(180deg, #3b6f60, #2f5d50);
+  color: #fffdf8;
   border: none;
   border-radius: 12px;
   padding: 11px 16px;
   font-weight: 700;
   cursor: pointer;
   text-decoration: none;
-  box-shadow: 0 10px 24px rgba(37, 99, 235, 0.18);
+  box-shadow: 0 10px 24px rgba(47, 93, 80, 0.18);
 }
 
 button:hover,
@@ -179,25 +179,25 @@ button:hover,
 .status-banner.success {
   background: var(--success-soft);
   color: var(--success);
-  border-color: #cdeed8;
+  border-color: #cde3d6;
 }
 
 .status-banner.failure {
   background: var(--failure-soft);
   color: var(--failure);
-  border-color: #f5caca;
+  border-color: #efcfc7;
 }
 
 .status-banner.warning {
   background: var(--warning-soft);
   color: var(--warning);
-  border-color: #f3dbb9;
+  border-color: #ecdcbc;
 }
 
 .status-banner.neutral {
   background: var(--neutral-soft);
   color: var(--neutral);
-  border-color: #dbe3ec;
+  border-color: #dde1db;
 }
 
 .summary-grid {
@@ -246,7 +246,7 @@ button:hover,
 .progress-bar {
   width: 100%;
   height: 14px;
-  background: #e8eef7;
+  background: #e5e0d5;
   border-radius: 999px;
   overflow: hidden;
   border: 1px solid var(--border);
@@ -259,19 +259,19 @@ button:hover,
 }
 
 .progress-fill.success {
-  background: linear-gradient(90deg, #22c55e, #15803d);
+  background: linear-gradient(90deg, #56a37e, #2f7a5c);
 }
 
 .progress-fill.failure {
-  background: linear-gradient(90deg, #f87171, #dc2626);
+  background: linear-gradient(90deg, #d26a57, #b2412d);
 }
 
 .progress-fill.warning {
-  background: linear-gradient(90deg, #f59e0b, #b45309);
+  background: linear-gradient(90deg, #c99858, #9a6a2f);
 }
 
 .progress-fill.neutral {
-  background: linear-gradient(90deg, #94a3b8, #64748b);
+  background: linear-gradient(90deg, #90988f, #6c736d);
 }
 
 .result-grid {
@@ -300,17 +300,17 @@ button:hover,
 
 .result-box.success {
   background: var(--success-soft);
-  border-color: #cdeed8;
+  border-color: #cde3d6;
 }
 
 .result-box.failure {
   background: var(--failure-soft);
-  border-color: #f5caca;
+  border-color: #efcfc7;
 }
 
 .result-box.neutral {
   background: var(--neutral-soft);
-  border-color: #dbe3ec;
+  border-color: #dde1db;
 }
 
 .actions-row {
@@ -372,7 +372,7 @@ button:hover,
   display: grid;
   place-items: center;
   font-weight: 700;
-  background: #fff;
+  background: #fffaf2;
   border: 1px solid var(--border);
 }
 
@@ -407,8 +407,8 @@ button:hover,
 
 .info-item code,
 .metric-card code {
-  color: #1d4ed8;
-  background: #eef4ff;
+  color: #2f5d50;
+  background: #e8f0ed;
   border-radius: 8px;
   padding: 2px 6px;
 }
@@ -432,19 +432,19 @@ button:hover,
 }
 
 .job-card.success {
-  border-color: #cdeed8;
+  border-color: #cde3d6;
 }
 
 .job-card.failure {
-  border-color: #f5caca;
+  border-color: #efcfc7;
 }
 
 .job-card.warning {
-  border-color: #f3dbb9;
+  border-color: #ecdcbc;
 }
 
 .job-card.neutral {
-  border-color: #dbe3ec;
+  border-color: #dde1db;
 }
 
 .job-header {
@@ -489,25 +489,25 @@ button:hover,
 .badge.success {
   background: var(--success-soft);
   color: var(--success);
-  border-color: #cdeed8;
+  border-color: #cde3d6;
 }
 
 .badge.failure {
   background: var(--failure-soft);
   color: var(--failure);
-  border-color: #f5caca;
+  border-color: #efcfc7;
 }
 
 .badge.warning {
   background: var(--warning-soft);
   color: var(--warning);
-  border-color: #f3dbb9;
+  border-color: #ecdcbc;
 }
 
 .badge.neutral {
   background: var(--neutral-soft);
   color: var(--neutral);
-  border-color: #dbe3ec;
+  border-color: #dde1db;
 }
 
 .timeline {
@@ -563,7 +563,7 @@ button:hover,
 .loading-overlay {
   position: fixed;
   inset: 0;
-  background: rgba(241, 245, 249, 0.84);
+  background: rgba(246, 244, 239, 0.84);
   backdrop-filter: blur(6px);
   display: none;
   place-items: center;
@@ -576,7 +576,7 @@ button:hover,
 
 .loading-card {
   width: min(420px, calc(100% - 32px));
-  background: #fff;
+  background: #fffdf8;
   border: 1px solid var(--border);
   border-radius: 24px;
   padding: 28px 24px;
@@ -598,7 +598,7 @@ button:hover,
   height: 62px;
   margin: 0 auto;
   border-radius: 999px;
-  border: 6px solid #dbe8fb;
+  border: 6px solid #d9dfd8;
   border-top-color: var(--primary);
   animation: spin 1s linear infinite;
 }
