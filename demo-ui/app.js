@@ -1,40 +1,40 @@
 const jobDescriptions = {
-  'test-node': 'Ejecuta pruebas unitarias de la aplicación Node + Express.',
-  'validate-bake': 'Valida la definición declarativa del build usando Docker Bake.',
-  'build-smoke': 'Construye la imagen y verifica que el contenedor responda correctamente.',
+  'test-node': 'Ejecuta las pruebas unitarias de la aplicación demo en Node + Express.',
+  'validate-bake': 'Usa docker/bake-action para validar la definición declarativa de Docker Bake.',
+  'build-smoke': 'Construye la imagen, arranca el contenedor y comprueba que responda correctamente.',
   'publish-ghcr': 'Publica la imagen automatizada en GitHub Container Registry.',
 };
 
-const pipelineBlueprint = [
+const internalBlueprint = [
   {
     id: 'event',
-    label: 'Evento recibido',
-    description: 'GitHub detecta el push o pull request y dispara el workflow.',
+    title: 'Evento del repositorio',
+    description: 'GitHub detecta un push o pull request y activa el workflow.',
   },
   {
-    id: 'test-node',
-    label: 'Pruebas unitarias',
-    description: 'Validación inicial del comportamiento de la aplicación.',
+    id: 'inputs',
+    title: 'Entradas hacia bake-action',
+    description: 'La acción recibe source, files y targets para ejecutar Bake dentro del fork.',
   },
   {
     id: 'validate-bake',
-    label: 'Validación Bake',
-    description: 'Comprobación del flujo de construcción declarativo.',
+    title: 'Resolución de la definición Bake',
+    description: 'Se interpreta docker-bake.hcl y se valida la configuración declarativa.',
   },
   {
     id: 'build-smoke',
-    label: 'Build y smoke test',
-    description: 'Construcción de imagen y arranque de prueba del contenedor.',
+    title: 'Ejecución del build',
+    description: 'Buildx/Bake construye la imagen y se realiza una verificación básica del contenedor.',
   },
   {
     id: 'publish-ghcr',
-    label: 'Publicación de imagen',
-    description: 'Envío automatizado de la imagen al registro de contenedores.',
+    title: 'Publicación de artefactos',
+    description: 'La imagen generada se publica en GHCR como resultado visible del pipeline.',
   },
   {
     id: 'dashboard',
-    label: 'Dashboard en línea',
-    description: 'Publicación del tablero visual para seguimiento del pipeline.',
+    title: 'Observabilidad del proceso',
+    description: 'El dashboard muestra el estado, las entradas, las salidas y la interpretación del flujo.',
   },
 ];
 
@@ -64,14 +64,13 @@ function normalizeResult(result) {
 }
 
 function badgeText(result) {
-  if (!result) return 'Sin dato';
-
-  const normalized = result.toLowerCase();
+  const normalized = (result || '').toLowerCase();
 
   if (normalized === 'success') return 'Correcto';
   if (normalized === 'failure') return 'Fallido';
   if (normalized === 'cancelled') return 'Cancelado';
   if (normalized === 'skipped') return 'Omitido';
+  if (!normalized) return 'Sin dato';
 
   return result;
 }
@@ -87,76 +86,85 @@ function overallResult(jobs = []) {
 
 function overallMessage(result) {
   if (result === 'success') {
-    return 'Pipeline completado correctamente. La automatización terminó sin errores.';
+    return 'El pipeline terminó correctamente y la automatización completó sus etapas principales en verde.';
   }
 
   if (result === 'failure') {
-    return 'Se detectó al menos un fallo dentro del pipeline automatizado.';
+    return 'La ejecución contiene al menos un job fallido y requiere revisión.';
   }
 
   if (result === 'warning') {
     return 'La ejecución terminó con advertencias, cancelaciones o pasos omitidos.';
   }
 
-  return 'No fue posible determinar un estado final completamente claro.';
+  return 'No hay suficiente información para determinar un estado final claro.';
 }
 
 function heroTitle(result) {
-  if (result === 'success') return 'Ejecución exitosa';
-  if (result === 'failure') return 'Ejecución con fallos';
-  if (result === 'warning') return 'Ejecución con advertencias';
-  return 'Estado indefinido';
+  if (result === 'success') return 'Pipeline exitoso';
+  if (result === 'failure') return 'Pipeline con fallos';
+  if (result === 'warning') return 'Pipeline con advertencias';
+  return 'Estado no determinado';
 }
 
 function heroText(result) {
   if (result === 'success') {
-    return 'Todas las validaciones críticas del flujo terminaron en verde.';
+    return 'La automatización ejecutó correctamente las validaciones, el build y la publicación configurada.';
   }
 
   if (result === 'failure') {
-    return 'Hay al menos un job que requiere revisión antes de considerar estable el pipeline.';
+    return 'Existe una etapa que falló y debe revisarse antes de considerar estable el flujo.';
   }
 
   if (result === 'warning') {
-    return 'La ejecución presentó un estado intermedio o no completamente exitoso.';
+    return 'La ejecución no fue completamente limpia, aunque parte del proceso sí avanzó.';
   }
 
-  return 'No hay suficiente información para mostrar un estado concluyente.';
+  return 'No fue posible reconstruir un estado final completo a partir de los datos disponibles.';
 }
 
 function computeStats(jobs = []) {
   const success = jobs.filter((job) => job.result === 'success').length;
   const failure = jobs.filter((job) => job.result === 'failure').length;
   const other = jobs.length - success - failure;
-
   const progress = jobs.length ? Math.round((success / jobs.length) * 100) : 0;
 
   return { success, failure, other, progress };
 }
 
+function getJobMap(jobs = []) {
+  return jobs.reduce((accumulator, job) => {
+    accumulator[job.id] = job;
+    return accumulator;
+  }, {});
+}
+
 function updateStatusVisuals(result, stats) {
-  const normalized = normalizeResult(result);
+  const style = normalizeResult(result);
 
   const banner = document.getElementById('statusBanner');
-  banner.className = `status-banner ${normalized}`;
+  banner.className = `status-banner ${style}`;
   banner.textContent = overallMessage(result);
 
-  const heroPill = document.getElementById('heroStatusPill');
-  heroPill.className = `status-pill ${normalized}`;
-  heroPill.textContent = badgeText(result);
+  const heroBadge = document.getElementById('heroBadge');
+  heroBadge.className = `badge ${style}`;
+  heroBadge.textContent = badgeText(result);
 
-  setText('heroStatusTitle', heroTitle(result));
-  setText('heroStatusText', heroText(result));
+  setText('heroTitle', heroTitle(result));
+  setText('heroText', heroText(result));
 
   setText('successCount', String(stats.success));
   setText('failureCount', String(stats.failure));
   setText('otherCount', String(stats.other));
   setText('progressPercent', `${stats.progress}%`);
-  setText('progressText', `${stats.success} de ${stats.success + stats.failure + stats.other} jobs correctos`);
+  setText(
+    'progressText',
+    `${stats.success} de ${stats.success + stats.failure + stats.other} jobs completados correctamente`
+  );
 
-  const fill = document.getElementById('progressFill');
-  fill.className = `progress-fill ${normalized}`;
-  fill.style.width = `${stats.progress}%`;
+  const progressFill = document.getElementById('progressFill');
+  progressFill.className = `progress-fill ${style}`;
+  progressFill.style.width = `${stats.progress}%`;
 }
 
 function renderSummary(data) {
@@ -177,43 +185,118 @@ function renderSummary(data) {
   updateStatusVisuals(result, stats);
 }
 
-function getJobMap(jobs = []) {
-  return jobs.reduce((accumulator, job) => {
-    accumulator[job.id] = job;
-    return accumulator;
-  }, {});
-}
-
-function renderPipeline(data) {
-  const container = document.getElementById('pipelineSteps');
+function renderInternalFlow(data) {
+  const container = document.getElementById('internalFlow');
   container.innerHTML = '';
 
   const jobMap = getJobMap(data.jobs || []);
 
-  pipelineBlueprint.forEach((step, index) => {
-    let status = 'neutral';
+  internalBlueprint.forEach((step, index) => {
+    let result = 'neutral';
 
-    if (step.id === 'event') {
-      status = 'success';
-    } else if (step.id === 'dashboard') {
-      status = 'success';
+    if (step.id === 'event' || step.id === 'inputs' || step.id === 'dashboard') {
+      result = 'success';
     } else if (jobMap[step.id]) {
-      status = normalizeResult(jobMap[step.id].result);
+      result = normalizeResult(jobMap[step.id].result);
     }
 
-    const card = document.createElement('article');
-    card.className = `pipeline-step ${status}`;
+    const article = document.createElement('article');
+    article.className = `flow-card ${result}`;
 
-    card.innerHTML = `
-      <div class="step-top">
-        <div class="step-index">${index + 1}</div>
-        <span class="step-status">${badgeText(jobMap[step.id]?.result || (step.id === 'event' || step.id === 'dashboard' ? 'success' : 'neutral'))}</span>
+    article.innerHTML = `
+      <div class="flow-card-top">
+        <div class="flow-index">${index + 1}</div>
+        <span class="badge ${result}">${badgeText(jobMap[step.id]?.result || (step.id === 'event' || step.id === 'inputs' || step.id === 'dashboard' ? 'success' : 'neutral'))}</span>
       </div>
-      <h3>${step.label}</h3>
+      <h3>${step.title}</h3>
       <p>${step.description}</p>
     `;
 
-    container.appendChild(card);
+    container.appendChild(article);
+  });
+}
+
+function renderInputs(data) {
+  const container = document.getElementById('actionInputs');
+  container.innerHTML = '';
+
+  const items = [
+    {
+      title: 'Implementación usada',
+      value: data.action?.implementation || 'uses: ./',
+    },
+    {
+      title: 'Source',
+      value: data.action?.source || './demo',
+    },
+    {
+      title: 'Archivo Bake',
+      value: data.action?.files || './docker-bake.hcl',
+    },
+    {
+      title: 'Targets principales',
+      value: Array.isArray(data.action?.targets) ? data.action.targets.join(', ') : '-',
+    },
+    {
+      title: 'Motor de build',
+      value: data.action?.engine || 'docker buildx bake',
+    },
+    {
+      title: 'Propósito',
+      value: data.action?.purpose || 'Validar, construir y automatizar el flujo de build del proyecto',
+    },
+  ];
+
+  items.forEach((item) => {
+    const article = document.createElement('article');
+    article.className = 'info-item';
+    article.innerHTML = `
+      <strong>${item.title}</strong>
+      <span><code>${item.value}</code></span>
+    `;
+    container.appendChild(article);
+  });
+}
+
+function renderArtifacts(data) {
+  const container = document.getElementById('artifactsList');
+  container.innerHTML = '';
+
+  const items = [
+    {
+      title: 'Imagen latest',
+      value: data.artifacts?.imageLatest || '-',
+    },
+    {
+      title: 'Imagen por SHA',
+      value: data.artifacts?.imageSha || '-',
+    },
+    {
+      title: 'Registro',
+      value: data.artifacts?.registry || 'GHCR',
+    },
+    {
+      title: 'Puerto de la app',
+      value: data.artifacts?.appPort || '3000',
+    },
+    {
+      title: 'URL de la ejecución',
+      value: data.workflowUrl || '-',
+    },
+    {
+      title: 'Ubicación del paquete',
+      value: data.artifacts?.packageLocation || 'GitHub > Packages',
+    },
+  ];
+
+  items.forEach((item) => {
+    const article = document.createElement('article');
+    article.className = 'info-item';
+    article.innerHTML = `
+      <strong>${item.title}</strong>
+      <span><code>${item.value}</code></span>
+    `;
+    container.appendChild(article);
   });
 }
 
@@ -222,16 +305,18 @@ function renderJobs(jobs = []) {
   container.innerHTML = '';
 
   jobs.forEach((job) => {
-    const normalized = normalizeResult(job.result);
-    const description = jobDescriptions[job.id] || 'Job reportado por GitHub Actions dentro del pipeline.';
+    const style = normalizeResult(job.result);
+    const description =
+      jobDescriptions[job.id] ||
+      'Job reportado por GitHub Actions dentro del flujo automatizado.';
 
     const article = document.createElement('article');
-    article.className = `job-card ${normalized}`;
+    article.className = `job-card ${style}`;
 
     article.innerHTML = `
       <div class="job-header">
         <h3 class="job-title">${job.name}</h3>
-        <span class="status-pill ${normalized}">${badgeText(job.result)}</span>
+        <span class="badge ${style}">${badgeText(job.result)}</span>
       </div>
       <p class="job-description">${description}</p>
       <div class="job-meta">
@@ -243,41 +328,46 @@ function renderJobs(jobs = []) {
   });
 }
 
-function renderActivityLog(data) {
+function renderTimeline(data) {
   const container = document.getElementById('activityLog');
   container.innerHTML = '';
 
   const entries = [
     {
-      title: 'Workflow activado',
-      text: `Se detectó el evento ${data.event} en la rama ${data.refName}.`,
+      title: 'Activación del workflow',
+      text: `Se recibió el evento ${data.event} en la rama ${data.refName}, lo que disparó la automatización del repositorio.`,
+      status: 'success',
+    },
+    {
+      title: 'Configuración de la acción',
+      text: `El fork usa docker/bake-action mediante ${data.action?.implementation || 'uses: ./'} con source ${data.action?.source || './demo'} y definición ${data.action?.files || './docker-bake.hcl'}.`,
       status: 'success',
     },
     ...(data.jobs || []).map((job) => ({
       title: job.name,
-      text: `Resultado reportado por GitHub Actions: ${badgeText(job.result)}.`,
+      text: `Resultado registrado por GitHub Actions: ${badgeText(job.result)}.`,
       status: normalizeResult(job.result),
     })),
     {
-      title: 'Dashboard generado',
-      text: 'La visualización fue publicada y refleja el estado más reciente del pipeline.',
+      title: 'Artefactos resultantes',
+      text: `El flujo deja evidencia visible mediante el dashboard, la imagen publicada y la ejecución accesible en GitHub Actions.`,
       status: 'success',
     },
   ];
 
   entries.forEach((entry) => {
-    const item = document.createElement('article');
-    item.className = 'activity-item';
+    const article = document.createElement('article');
+    article.className = 'timeline-item';
 
-    item.innerHTML = `
-      <span class="activity-dot ${entry.status}"></span>
+    article.innerHTML = `
+      <span class="timeline-dot ${entry.status}"></span>
       <div>
         <strong>${entry.title}</strong>
         <p>${entry.text}</p>
       </div>
     `;
 
-    container.appendChild(item);
+    container.appendChild(article);
   });
 }
 
@@ -300,20 +390,22 @@ async function init() {
     const data = await loadDashboard();
 
     renderSummary(data);
-    renderPipeline(data);
+    renderInternalFlow(data);
+    renderInputs(data);
+    renderArtifacts(data);
     renderJobs(data.jobs || []);
-    renderActivityLog(data);
+    renderTimeline(data);
   } catch (error) {
     const banner = document.getElementById('statusBanner');
     banner.className = 'status-banner failure';
     banner.textContent = `Error al cargar el dashboard: ${error.message}`;
 
-    const heroPill = document.getElementById('heroStatusPill');
-    heroPill.className = 'status-pill failure';
-    heroPill.textContent = 'Error';
+    const heroBadge = document.getElementById('heroBadge');
+    heroBadge.className = 'badge failure';
+    heroBadge.textContent = 'Error';
 
-    setText('heroStatusTitle', 'No se pudo cargar el dashboard');
-    setText('heroStatusText', 'Verifica que latest-run.json exista y que el workflow haya publicado la información.');
+    setText('heroTitle', 'No se pudo construir la vista');
+    setText('heroText', 'Verifica que latest-run.json exista y que el workflow lo haya generado correctamente.');
   } finally {
     setLoading(false);
   }

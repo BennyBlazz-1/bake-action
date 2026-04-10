@@ -160,6 +160,17 @@ jobs:
           RUN_NUMBER: ${{ github.run_number }}
           SHA: ${{ github.sha }}
           SERVER_URL: ${{ github.server_url }}
+          ACTION_IMPLEMENTATION: "uses: ./"
+          ACTION_SOURCE: "./demo"
+          ACTION_FILES: "./docker-bake.hcl"
+          ACTION_TARGETS: "validate, local"
+          ACTION_ENGINE: "docker buildx bake"
+          ACTION_PURPOSE: "Validar, construir, publicar imagen y visualizar el pipeline"
+          IMAGE_LATEST: "ghcr.io/bennyblazz-1/bake-action-demo:latest"
+          IMAGE_SHA: "ghcr.io/bennyblazz-1/bake-action-demo:${{ github.sha }}"
+          PACKAGE_REGISTRY: "GitHub Container Registry"
+          PACKAGE_LOCATION: "GitHub > Packages"
+          APP_PORT: "3000"
           TEST_NODE_RESULT: ${{ needs.test-node.result }}
           VALIDATE_BAKE_RESULT: ${{ needs.validate-bake.result }}
           BUILD_SMOKE_RESULT: ${{ needs.build-smoke.result }}
@@ -186,6 +197,21 @@ jobs:
             "sha": "${SHA}",
             "generatedAt": "${GENERATED_AT}",
             "workflowUrl": "${SERVER_URL}/${REPOSITORY}/actions/runs/${RUN_ID}",
+            "action": {
+              "implementation": "${ACTION_IMPLEMENTATION}",
+              "source": "${ACTION_SOURCE}",
+              "files": "${ACTION_FILES}",
+              "targets": ["validate", "local"],
+              "engine": "${ACTION_ENGINE}",
+              "purpose": "${ACTION_PURPOSE}"
+            },
+            "artifacts": {
+              "imageLatest": "${IMAGE_LATEST}",
+              "imageSha": "${IMAGE_SHA}",
+              "registry": "${PACKAGE_REGISTRY}",
+              "packageLocation": "${PACKAGE_LOCATION}",
+              "appPort": "${APP_PORT}"
+            },
             "jobs": [
               {
                 "id": "test-node",
@@ -201,6 +227,11 @@ jobs:
                 "id": "build-smoke",
                 "name": "Build y smoke test",
                 "result": "${BUILD_SMOKE_RESULT}"
+              },
+              {
+                "id": "publish-ghcr",
+                "name": "Publicar imagen en GHCR",
+                "result": "${PUBLISH_GHCR_RESULT}"
               }
             ]
           }

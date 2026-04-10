@@ -3,47 +3,46 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Dashboard CI/CD - bake-action</title>
+  <title>Dashboard CI/CD · bake-action</title>
   <link rel="stylesheet" href="./styles.css" />
 </head>
 <body>
   <div id="loadingOverlay" class="loading-overlay active">
-    <div class="loading-box">
+    <div class="loading-card">
       <div class="spinner"></div>
-      <h2>Cargando dashboard del pipeline</h2>
-      <p>Obteniendo el estado más reciente de GitHub Actions...</p>
+      <h2>Cargando estado del pipeline</h2>
+      <p>Obteniendo información de la última ejecución automatizada...</p>
     </div>
   </div>
 
   <header class="hero">
     <div class="container hero-grid">
-      <div>
+      <div class="hero-copy">
         <p class="eyebrow">Proyecto CI/CD · docker/bake-action</p>
-        <h1>Dashboard visual del pipeline</h1>
+        <h1>Panel visual del pipeline y del funcionamiento de bake-action</h1>
         <p class="subtitle">
-          Visualización de la última ejecución automatizada usando GitHub Actions,
-          Docker Bake, publicación de imagen y despliegue del dashboard.
+          Esta vista explica cómo el workflow recibe un evento, ejecuta la acción,
+          resuelve la definición Bake, construye la imagen, la publica y genera artefactos
+          observables del proceso.
         </p>
       </div>
 
-      <div class="hero-status-card">
-        <span id="heroStatusPill" class="status-pill neutral">Cargando</span>
-        <h3 id="heroStatusTitle">Esperando datos del pipeline</h3>
-        <p id="heroStatusText" class="hero-status-text">
-          El sistema está recuperando la información más reciente.
+      <aside class="hero-status">
+        <span id="heroBadge" class="badge neutral">Cargando</span>
+        <h3 id="heroTitle">Esperando datos del pipeline</h3>
+        <p id="heroText">
+          El dashboard está obteniendo la información más reciente de la automatización.
         </p>
-      </div>
+      </aside>
     </div>
   </header>
 
-  <main class="container">
-    <section class="panel summary-panel">
+  <main class="container main-layout">
+    <section class="panel">
       <div class="panel-header">
         <div>
           <h2>Estado general</h2>
-          <p class="panel-subtitle">
-            Vista rápida del estado actual de la automatización.
-          </p>
+          <p class="panel-subtitle">Resumen de la última ejecución del workflow.</p>
         </div>
         <button id="reloadBtn" type="button">Actualizar</button>
       </div>
@@ -52,72 +51,65 @@
         Cargando información del workflow...
       </div>
 
-      <div class="stats-grid">
-        <article class="stat-card">
-          <span class="label">Repositorio</span>
+      <div class="summary-grid">
+        <article class="metric-card">
+          <span class="metric-label">Repositorio</span>
           <strong id="repository">-</strong>
         </article>
-
-        <article class="stat-card">
-          <span class="label">Workflow</span>
+        <article class="metric-card">
+          <span class="metric-label">Workflow</span>
           <strong id="workflow">-</strong>
         </article>
-
-        <article class="stat-card">
-          <span class="label">Evento</span>
+        <article class="metric-card">
+          <span class="metric-label">Evento</span>
           <strong id="event">-</strong>
         </article>
-
-        <article class="stat-card">
-          <span class="label">Rama</span>
+        <article class="metric-card">
+          <span class="metric-label">Rama</span>
           <strong id="branch">-</strong>
         </article>
-
-        <article class="stat-card">
-          <span class="label">Actor</span>
+        <article class="metric-card">
+          <span class="metric-label">Actor</span>
           <strong id="actor">-</strong>
         </article>
-
-        <article class="stat-card">
-          <span class="label">Run ID</span>
+        <article class="metric-card">
+          <span class="metric-label">Run ID</span>
           <strong id="runId">-</strong>
         </article>
-
-        <article class="stat-card">
-          <span class="label">Commit</span>
+        <article class="metric-card">
+          <span class="metric-label">Commit</span>
           <strong id="sha">-</strong>
         </article>
-
-        <article class="stat-card">
-          <span class="label">Actualizado</span>
+        <article class="metric-card">
+          <span class="metric-label">Generado</span>
           <strong id="generatedAt">-</strong>
         </article>
       </div>
 
-      <div class="overview-grid">
-        <article class="overview-card">
-          <span class="label">Progreso del pipeline</span>
+      <div class="two-col-grid">
+        <article class="panel-subcard">
+          <span class="metric-label">Progreso del pipeline</span>
           <div class="progress-meta">
             <strong id="progressPercent">0%</strong>
-            <span id="progressText">Esperando datos</span>
+            <span id="progressText">Sin datos</span>
           </div>
           <div class="progress-bar">
             <div id="progressFill" class="progress-fill neutral"></div>
           </div>
         </article>
 
-        <article class="overview-card">
-          <span class="label">Resumen de resultados</span>
-          <div class="result-summary">
-            <div class="mini-result success">
+        <article class="panel-subcard">
+          <span class="metric-label">Resumen de resultados</span>
+          <div class="result-grid">
+            <div class="result-box success">
               <strong id="successCount">0</strong>
               <span>Correctos</span>
             </div>
-            <div class="mini-result failure">
+            <div class="result-box failure">
               <strong id="failureCount">0</strong>
               <span>Fallidos</span>
             </div>
-            <div class="mini-result neutral">
+            <div class="result-box neutral">
               <strong id="otherCount">0</strong>
               <span>Otros</span>
             </div>
@@ -125,24 +117,50 @@
         </article>
       </div>
 
-      <div class="actions">
-        <a id="runLink" class="link-button" href="#" target="_blank" rel="noreferrer">
-          Ver ejecución en GitHub
-        </a>
+      <div class="actions-row">
+        <a id="runLink" class="btn" href="#" target="_blank" rel="noreferrer">Ver ejecución en GitHub</a>
       </div>
     </section>
 
     <section class="panel">
       <div class="panel-header">
         <div>
-          <h2>Proceso del pipeline</h2>
+          <h2>¿Qué hace internamente bake-action?</h2>
           <p class="panel-subtitle">
-            Secuencia visual de las etapas más importantes de la automatización.
+            Vista guiada del flujo interno aplicado en tu implementación.
           </p>
         </div>
       </div>
 
-      <div id="pipelineSteps" class="pipeline-steps"></div>
+      <div id="internalFlow" class="flow-grid"></div>
+    </section>
+
+    <section class="two-panel-layout">
+      <section class="panel">
+        <div class="panel-header">
+          <div>
+            <h2>Entradas reales del action</h2>
+            <p class="panel-subtitle">
+              Parámetros con los que tu fork ejecuta docker/bake-action.
+            </p>
+          </div>
+        </div>
+
+        <div id="actionInputs" class="info-list"></div>
+      </section>
+
+      <section class="panel">
+        <div class="panel-header">
+          <div>
+            <h2>Salidas y artefactos</h2>
+            <p class="panel-subtitle">
+              Resultados visibles generados por el pipeline.
+            </p>
+          </div>
+        </div>
+
+        <div id="artifactsList" class="info-list"></div>
+      </section>
     </section>
 
     <section class="panel">
@@ -150,7 +168,7 @@
         <div>
           <h2>Estado por job</h2>
           <p class="panel-subtitle">
-            Resultado detallado de cada job reportado por GitHub Actions.
+            Resultado detallado de las etapas automatizadas.
           </p>
         </div>
       </div>
@@ -161,14 +179,14 @@
     <section class="panel">
       <div class="panel-header">
         <div>
-          <h2>Bitácora del proceso</h2>
+          <h2>Lectura técnica del proceso</h2>
           <p class="panel-subtitle">
-            Lectura rápida del flujo ejecutado y su resultado.
+            Interpretación secuencial de lo que ocurrió en la ejecución.
           </p>
         </div>
       </div>
 
-      <div id="activityLog" class="activity-log"></div>
+      <div id="activityLog" class="timeline"></div>
     </section>
   </main>
 
