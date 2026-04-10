@@ -1,3 +1,6 @@
+/* eslint-env jest */
+/* eslint-disable @typescript-eslint/no-require-imports */
+
 const request = require('supertest');
 const app = require('../src/app');
 

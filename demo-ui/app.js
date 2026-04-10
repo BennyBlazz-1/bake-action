@@ -1,5 +1,9 @@
+/* eslint-env browser */
+
 async function loadDashboard() {
-  const response = await fetch('./data/latest-run.json', { cache: 'no-store' });
+  const response = await fetch('./data/latest-run.json', {
+    cache: 'no-store',
+  });
 
   if (!response.ok) {
     throw new Error(`No se pudo cargar latest-run.json (${response.status})`);
@@ -25,10 +29,10 @@ function badgeClass(result) {
 
 function overallResult(jobs = []) {
   if (!jobs.length) return 'neutral';
-  if (jobs.some(job => job.result === 'failure')) return 'failure';
-  if (jobs.some(job => job.result === 'cancelled')) return 'cancelled';
-  if (jobs.every(job => job.result === 'success')) return 'success';
-  if (jobs.some(job => job.result === 'skipped')) return 'skipped';
+  if (jobs.some((job) => job.result === 'failure')) return 'failure';
+  if (jobs.some((job) => job.result === 'cancelled')) return 'cancelled';
+  if (jobs.every((job) => job.result === 'success')) return 'success';
+  if (jobs.some((job) => job.result === 'skipped')) return 'skipped';
   return 'neutral';
 }
 
@@ -75,7 +79,7 @@ function renderJobs(jobs = []) {
   const container = document.getElementById('jobsContainer');
   container.innerHTML = '';
 
-  jobs.forEach(job => {
+  jobs.forEach((job) => {
     const article = document.createElement('article');
     article.className = 'job-card';
 
