@@ -24,6 +24,11 @@
       "id": "build-smoke",
       "name": "Build y smoke test",
       "result": "success"
+    },
+    {
+      "id": "publish-ghcr",
+      "name": "Publicar imagen en GHCR",
+      "result": "${PUBLISH_GHCR_RESULT}"
     }
   ]
 }

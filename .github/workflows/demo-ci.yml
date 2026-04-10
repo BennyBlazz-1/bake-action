@@ -103,10 +103,43 @@ jobs:
         if: always()
         run: docker rm -f bake-action-demo || true
 
+  publish-ghcr:
+    name: Publicar imagen en GHCR
+    runs-on: ubuntu-latest
+    needs: build-smoke
+    if: ${{ github.event_name == 'push' && (github.ref_name == 'main' || github.ref_name == 'master') }}
+    permissions:
+      contents: read
+      packages: write
+
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v6
+
+      - name: Configurar Docker Buildx
+        uses: docker/setup-buildx-action@v4
+
+      - name: Iniciar sesión en GHCR
+        uses: docker/login-action@v3
+        with:
+          registry: ghcr.io
+          username: ${{ github.actor }}
+          password: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Publicar imagen
+        uses: docker/build-push-action@v6
+        with:
+          context: ./demo
+          file: ./demo/Dockerfile
+          push: true
+          tags: |
+            ghcr.io/${{ github.repository_owner }}/bake-action-demo:latest
+            ghcr.io/${{ github.repository_owner }}/bake-action-demo:${{ github.sha }}
+
   prepare-dashboard:
     name: Preparar dashboard visual
     runs-on: ubuntu-latest
-    needs: [test-node, validate-bake, build-smoke]
+    needs: [test-node, validate-bake, build-smoke, publish-ghcr]
     if: ${{ always() && github.event_name == 'push' && (github.ref_name == 'main' || github.ref_name == 'master') }}
 
     steps:
@@ -130,6 +163,7 @@ jobs:
           TEST_NODE_RESULT: ${{ needs.test-node.result }}
           VALIDATE_BAKE_RESULT: ${{ needs.validate-bake.result }}
           BUILD_SMOKE_RESULT: ${{ needs.build-smoke.result }}
+          PUBLISH_GHCR_RESULT: ${{ needs.publish-ghcr.result }}
         run: |
           mkdir -p _site/data
 
