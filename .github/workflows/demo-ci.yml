@@ -133,8 +133,8 @@ jobs:
           file: ./demo/Dockerfile
           push: true
           tags: |
-            ghcr.io/${{ github.repository_owner }}/bake-action-demo:latest
-            ghcr.io/${{ github.repository_owner }}/bake-action-demo:${{ github.sha }}
+            ghcr.io/bennyblazz-1/bake-action-demo:latest
+            ghcr.io/bennyblazz-1/bake-action-demo:${{ github.sha }}
 
   prepare-dashboard:
     name: Preparar dashboard visual
