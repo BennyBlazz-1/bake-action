@@ -7,94 +7,168 @@
   <link rel="stylesheet" href="./styles.css" />
 </head>
 <body>
+  <div id="loadingOverlay" class="loading-overlay active">
+    <div class="loading-box">
+      <div class="spinner"></div>
+      <h2>Cargando dashboard del pipeline</h2>
+      <p>Obteniendo el estado más reciente de GitHub Actions...</p>
+    </div>
+  </div>
+
   <header class="hero">
-    <div class="container">
-      <p class="eyebrow">Proyecto CI/CD</p>
-      <h1>Dashboard visual del pipeline</h1>
-      <p class="subtitle">
-        Visualización de la última ejecución automatizada usando GitHub Actions y docker/bake-action.
-      </p>
+    <div class="container hero-grid">
+      <div>
+        <p class="eyebrow">Proyecto CI/CD · docker/bake-action</p>
+        <h1>Dashboard visual del pipeline</h1>
+        <p class="subtitle">
+          Visualización de la última ejecución automatizada usando GitHub Actions,
+          Docker Bake, publicación de imagen y despliegue del dashboard.
+        </p>
+      </div>
+
+      <div class="hero-status-card">
+        <span id="heroStatusPill" class="status-pill neutral">Cargando</span>
+        <h3 id="heroStatusTitle">Esperando datos del pipeline</h3>
+        <p id="heroStatusText" class="hero-status-text">
+          El sistema está recuperando la información más reciente.
+        </p>
+      </div>
     </div>
   </header>
 
   <main class="container">
-    <section class="panel">
+    <section class="panel summary-panel">
       <div class="panel-header">
-        <h2>Resumen general</h2>
-        <button id="reloadBtn" type="button">Recargar</button>
+        <div>
+          <h2>Estado general</h2>
+          <p class="panel-subtitle">
+            Vista rápida del estado actual de la automatización.
+          </p>
+        </div>
+        <button id="reloadBtn" type="button">Actualizar</button>
       </div>
 
       <div id="statusBanner" class="status-banner neutral">
-        Cargando información del pipeline...
+        Cargando información del workflow...
       </div>
 
-      <div class="grid summary-grid">
-        <article class="card">
+      <div class="stats-grid">
+        <article class="stat-card">
           <span class="label">Repositorio</span>
           <strong id="repository">-</strong>
         </article>
 
-        <article class="card">
+        <article class="stat-card">
           <span class="label">Workflow</span>
           <strong id="workflow">-</strong>
         </article>
 
-        <article class="card">
+        <article class="stat-card">
           <span class="label">Evento</span>
           <strong id="event">-</strong>
         </article>
 
-        <article class="card">
+        <article class="stat-card">
           <span class="label">Rama</span>
           <strong id="branch">-</strong>
         </article>
 
-        <article class="card">
+        <article class="stat-card">
           <span class="label">Actor</span>
           <strong id="actor">-</strong>
         </article>
 
-        <article class="card">
+        <article class="stat-card">
           <span class="label">Run ID</span>
           <strong id="runId">-</strong>
         </article>
 
-        <article class="card">
+        <article class="stat-card">
           <span class="label">Commit</span>
           <strong id="sha">-</strong>
         </article>
 
-        <article class="card">
+        <article class="stat-card">
           <span class="label">Actualizado</span>
           <strong id="generatedAt">-</strong>
         </article>
       </div>
 
+      <div class="overview-grid">
+        <article class="overview-card">
+          <span class="label">Progreso del pipeline</span>
+          <div class="progress-meta">
+            <strong id="progressPercent">0%</strong>
+            <span id="progressText">Esperando datos</span>
+          </div>
+          <div class="progress-bar">
+            <div id="progressFill" class="progress-fill neutral"></div>
+          </div>
+        </article>
+
+        <article class="overview-card">
+          <span class="label">Resumen de resultados</span>
+          <div class="result-summary">
+            <div class="mini-result success">
+              <strong id="successCount">0</strong>
+              <span>Correctos</span>
+            </div>
+            <div class="mini-result failure">
+              <strong id="failureCount">0</strong>
+              <span>Fallidos</span>
+            </div>
+            <div class="mini-result neutral">
+              <strong id="otherCount">0</strong>
+              <span>Otros</span>
+            </div>
+          </div>
+        </article>
+      </div>
+
       <div class="actions">
-        <a id="runLink" class="link-button" href="#" target="_blank" rel="noreferrer">Ver ejecución en GitHub</a>
+        <a id="runLink" class="link-button" href="#" target="_blank" rel="noreferrer">
+          Ver ejecución en GitHub
+        </a>
       </div>
     </section>
 
     <section class="panel">
-      <h2>Estado por job</h2>
-      <div id="jobsContainer" class="grid jobs-grid"></div>
+      <div class="panel-header">
+        <div>
+          <h2>Proceso del pipeline</h2>
+          <p class="panel-subtitle">
+            Secuencia visual de las etapas más importantes de la automatización.
+          </p>
+        </div>
+      </div>
+
+      <div id="pipelineSteps" class="pipeline-steps"></div>
     </section>
 
     <section class="panel">
-      <h2>Flujo representado</h2>
-      <div class="flow">
-        <div class="flow-step">1. Push / Pull Request</div>
-        <div class="flow-arrow">→</div>
-        <div class="flow-step">2. Pruebas Node</div>
-        <div class="flow-arrow">→</div>
-        <div class="flow-step">3. Validación Bake</div>
-        <div class="flow-arrow">→</div>
-        <div class="flow-step">4. Build</div>
-        <div class="flow-arrow">→</div>
-        <div class="flow-step">5. Smoke Test</div>
-        <div class="flow-arrow">→</div>
-        <div class="flow-step">6. Dashboard</div>
+      <div class="panel-header">
+        <div>
+          <h2>Estado por job</h2>
+          <p class="panel-subtitle">
+            Resultado detallado de cada job reportado por GitHub Actions.
+          </p>
+        </div>
       </div>
+
+      <div id="jobsContainer" class="jobs-grid"></div>
+    </section>
+
+    <section class="panel">
+      <div class="panel-header">
+        <div>
+          <h2>Bitácora del proceso</h2>
+          <p class="panel-subtitle">
+            Lectura rápida del flujo ejecutado y su resultado.
+          </p>
+        </div>
+      </div>
+
+      <div id="activityLog" class="activity-log"></div>
     </section>
   </main>
 
