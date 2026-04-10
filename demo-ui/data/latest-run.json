@@ -1,0 +1,29 @@
+{
+  "repository": "usuario/bake-action",
+  "workflow": "demo-ci",
+  "event": "workflow_dispatch",
+  "refName": "main",
+  "actor": "usuario",
+  "runId": 0,
+  "runNumber": 0,
+  "sha": "0000000000000000000000000000000000000000",
+  "generatedAt": "2026-04-10T00:00:00Z",
+  "workflowUrl": "https://github.com",
+  "jobs": [
+    {
+      "id": "test-node",
+      "name": "Pruebas unitarias Node",
+      "result": "success"
+    },
+    {
+      "id": "validate-bake",
+      "name": "Validación Bake con el fork",
+      "result": "success"
+    },
+    {
+      "id": "build-smoke",
+      "name": "Build y smoke test",
+      "result": "success"
+    }
+  ]
+}

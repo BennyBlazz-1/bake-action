@@ -1,0 +1,249 @@
+:root {
+  --bg: #0b1020;
+  --panel: #121a30;
+  --panel-2: #17213d;
+  --text: #e9eefc;
+  --muted: #a9b4d0;
+  --border: #2b375d;
+  --success: #1f9d55;
+  --warning: #d97706;
+  --danger: #dc2626;
+  --neutral: #475569;
+  --accent: #60a5fa;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+body {
+  margin: 0;
+  font-family: Arial, Helvetica, sans-serif;
+  background: linear-gradient(180deg, #0b1020 0%, #0f172a 100%);
+  color: var(--text);
+}
+
+.container {
+  width: min(1120px, calc(100% - 32px));
+  margin: 0 auto;
+}
+
+.hero {
+  padding: 48px 0 28px;
+  border-bottom: 1px solid var(--border);
+  background: radial-gradient(circle at top left, rgba(96, 165, 250, 0.18), transparent 35%);
+}
+
+.eyebrow {
+  color: var(--accent);
+  font-weight: bold;
+  text-transform: uppercase;
+  letter-spacing: 0.08em;
+  margin-bottom: 8px;
+}
+
+h1 {
+  margin: 0 0 8px;
+  font-size: 2rem;
+}
+
+.subtitle {
+  margin: 0;
+  color: var(--muted);
+  max-width: 720px;
+  line-height: 1.5;
+}
+
+main {
+  padding: 28px 0 40px;
+}
+
+.panel {
+  background: rgba(18, 26, 48, 0.95);
+  border: 1px solid var(--border);
+  border-radius: 18px;
+  padding: 22px;
+  margin-bottom: 22px;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.22);
+}
+
+.panel-header {
+  display: flex;
+  justify-content: space-between;
+  gap: 16px;
+  align-items: center;
+  margin-bottom: 16px;
+}
+
+.panel h2 {
+  margin-top: 0;
+  margin-bottom: 14px;
+}
+
+button,
+.link-button {
+  border: none;
+  border-radius: 10px;
+  background: var(--accent);
+  color: #08111f;
+  font-weight: bold;
+  padding: 10px 14px;
+  cursor: pointer;
+  text-decoration: none;
+  display: inline-block;
+}
+
+button:hover,
+.link-button:hover {
+  opacity: 0.92;
+}
+
+.status-banner {
+  border-radius: 12px;
+  padding: 14px 16px;
+  font-weight: bold;
+  margin-bottom: 18px;
+  border: 1px solid transparent;
+}
+
+.status-banner.success {
+  background: rgba(31, 157, 85, 0.18);
+  border-color: rgba(31, 157, 85, 0.45);
+  color: #b7f7cf;
+}
+
+.status-banner.failure {
+  background: rgba(220, 38, 38, 0.18);
+  border-color: rgba(220, 38, 38, 0.45);
+  color: #fecaca;
+}
+
+.status-banner.cancelled,
+.status-banner.skipped {
+  background: rgba(217, 119, 6, 0.18);
+  border-color: rgba(217, 119, 6, 0.45);
+  color: #fde68a;
+}
+
+.status-banner.neutral {
+  background: rgba(71, 85, 105, 0.2);
+  border-color: rgba(71, 85, 105, 0.45);
+  color: #dbeafe;
+}
+
+.grid {
+  display: grid;
+  gap: 16px;
+}
+
+.summary-grid {
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+}
+
+.jobs-grid {
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+}
+
+.card {
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 16px;
+}
+
+.label {
+  display: block;
+  font-size: 0.85rem;
+  color: var(--muted);
+  margin-bottom: 8px;
+}
+
+.job-card {
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  border-radius: 14px;
+  padding: 16px;
+}
+
+.job-title {
+  margin: 0 0 10px;
+  font-size: 1rem;
+}
+
+.badge {
+  display: inline-block;
+  padding: 6px 10px;
+  border-radius: 999px;
+  font-size: 0.85rem;
+  font-weight: bold;
+}
+
+.badge.success {
+  background: rgba(31, 157, 85, 0.2);
+  color: #b7f7cf;
+}
+
+.badge.failure {
+  background: rgba(220, 38, 38, 0.2);
+  color: #fecaca;
+}
+
+.badge.cancelled,
+.badge.skipped {
+  background: rgba(217, 119, 6, 0.2);
+  color: #fde68a;
+}
+
+.badge.neutral {
+  background: rgba(71, 85, 105, 0.25);
+  color: #dbeafe;
+}
+
+.actions {
+  margin-top: 18px;
+}
+
+.flow {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+  align-items: center;
+}
+
+.flow-step {
+  background: var(--panel-2);
+  border: 1px solid var(--border);
+  border-radius: 12px;
+  padding: 12px 14px;
+  font-weight: bold;
+}
+
+.flow-arrow {
+  color: var(--muted);
+  font-size: 1.2rem;
+}
+
+.small {
+  color: var(--muted);
+  font-size: 0.9rem;
+  margin-top: 8px;
+}
+
+code {
+  color: #93c5fd;
+}
+
+@media (max-width: 640px) {
+  h1 {
+    font-size: 1.6rem;
+  }
+
+  .panel {
+    padding: 18px;
+  }
+
+  .panel-header {
+    flex-direction: column;
+    align-items: stretch;
+  }
+}
