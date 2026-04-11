@@ -8,7 +8,7 @@ import eslintPluginPrettier from 'eslint-plugin-prettier';
 
 export default defineConfig([
   {
-    ignores: ['.yarn/**/*', 'coverage/**/*', 'dist/**/*', 'demo/**', 'demo-ui/**']
+    ignores: ['.yarn/**/*', 'coverage/**/*', 'dist/**/*']
   },
   js.configs.recommended,
   ...tseslint.configs['flat/recommended'],
