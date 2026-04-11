@@ -12,7 +12,7 @@ variable "APP_PORT" {
 
 target "app" {
   context    = "."
-  dockerfile = "Dockerfile"
+  dockerfile = "Dockerfile-mal"
 
   tags = [
     "${IMAGE_NAME}:${IMAGE_TAG}"
