@@ -22,11 +22,11 @@ describe('API bake-action-demo', () => {
   });
 
   test('GET /version debe regresar nombre y versión', async () => {
-    const response = await request(app).get('/version');
+    const response = await request(app).get('/vrsion');
 
     expect(response.statusCode).toBe(200);
     expect(response.body.name).toBe('bake-action-demo');
-    expect(response.body.version).toBe('1.0.0');
+    expect(response.body.version).toBe('2.0.0');
   });
 
   test('GET /pipeline debe responder aunque esté fuera de GitHub Actions', async () => {
